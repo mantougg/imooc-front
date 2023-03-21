@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { getList } from '@/api/content'
 import ListItem from './ListItem.vue'
 
 export default {
@@ -25,31 +26,49 @@ export default {
   data () {
     return {
       page: 0,
-      limit: 20,
-      lists: [{
-        uid: {
-          name: 'imooc',
-          isVip: 1
-        },
-        title: '大前端课程',
-        content: '',
-        created: '2023-03-19 21:31:00',
-        catalog: 'ask',
-        fav: 40,
-        isEnd: 0,
-        reads: 10,
-        answer: 0,
-        status: 0,
-        isTop: 1,
-        tags: [{
-          name: '精华',
-          class: 'layui-bg-red'
-        }, {
-          name: '热门',
-          class: 'layui-bg-blue'
-        }]
-      }]
+      limit: 3,
+      lists: [],
+      isEnd: false,
+      isRepeat: false
     }
+  },
+  methods: {
+    _getList () {
+      if (this.isRepeat) return
+      if (this.isEnd) return
+      this.isRepeat = true
+      let options = {
+        isTop: 1,
+        page: this.page,
+        limit: this.limit
+      }
+      getList(options).then((res) => {
+        // 加入一个请求锁，放置用户多次点击，等待用户数据返回后，再打开
+        this.isRepeat = false
+        // 对于异常的判断，res.code非200，给用户一个提示
+        // 判断lists长度是否为0，如果为零即可直接赋值
+        // 当lists长度不为0，后面请求的数据，加入到lists里面来
+        if (res.code === 200) {
+          // 判断res.data的长度，如果小于20条，则是最后页
+          if (res.data.length < this.limit) {
+            this.isEnd = true
+          }
+          if (this.lists.length === 0) {
+            this.lists = res.data
+          } else {
+            this.lists = this.lists.concat(res.data)
+          }
+        }
+      }).catch((err) => {
+        this.isRepeat = false
+        if (err) {
+          this.$alert(err.message)
+        }
+      })
+    }
+  },
+  mounted () {
+    this._getList()
   }
 }
 </script>
