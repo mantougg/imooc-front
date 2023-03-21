@@ -3,17 +3,8 @@
     <h3 class="fly-panel-title">温馨通道</h3>
     <div class="fly-panel-main layui-row">
       <ul class="layui-clear i-quick">
-        <li class="layui-col-xs6">
-          <a href="" target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href="" target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href="" target="_blank">imooc</a>
-        </li>
-        <li class="layui-col-xs6">
-          <a href="" target="_blank">imooc</a>
+        <li v-for="tip in lists" :key="`${tip.title}`" class="layui-col-xs6">
+          <a :href="tip.link" target="_blank">{{ tip.title }}</a>
         </li>
       </ul>
     </div>
@@ -21,8 +12,24 @@
 </template>
 
 <script>
+import { getTips } from '@/api/content'
+import { IndexMixin } from '@/mixins/IndexMixin'
+
 export default {
-  name: 'tips'
+  name: 'tips',
+  mixins: [IndexMixin],
+  data () {
+    return {
+      lists: []
+    }
+  },
+  mounted () {
+    getTips().then((res) => {
+      if (res.code === 200) {
+        this.lists = res.data
+      }
+    })
+  }
 }
 </script>
 

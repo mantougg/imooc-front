@@ -17,9 +17,11 @@
 <script>
 import { getList } from '@/api/content'
 import ListItem from './ListItem.vue'
+import { IndexMixin } from '@/mixins/IndexMixin'
 
 export default {
   name: 'top',
+  mixins: [IndexMixin],
   components: {
     'i-listitem': ListItem
   },
