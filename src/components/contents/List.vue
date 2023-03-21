@@ -34,6 +34,7 @@ export default {
     return {
       isEnd: false,
       isRepeat: false,
+      current: '',
       status: '',
       tag: '',
       sort: 'created',
@@ -43,10 +44,29 @@ export default {
       lists: []
     }
   },
+  watch: {
+    current (n, o) {
+      // console.log('current: ' + o + n)
+      this.init()
+    },
+    '$route' (n) {
+      let catalog = n.params['catalog']
+      if (typeof catalog !== 'undefined' && catalog !== '') {
+        this.catalog = catalog
+      }
+      this.init()
+    }
+  },
   components: {
     'i-listitem': ListItem
   },
   methods: {
+    init () {
+      this.page = 0
+      this.isEnd = false
+      this.lists = []
+      this._getList()
+    },
     _getList () {
       if (this.isRepeat) return
       if (this.isEnd) return
@@ -63,7 +83,6 @@ export default {
       getList(options).then((res) => {
         // 加入一个请求锁，放置用户多次点击，等待用户数据返回后，再打开
         this.isRepeat = false
-        console.log(res)
         // 对于异常的判断，res.code非200，给用户一个提示
         // 判断lists长度是否为0，如果为零即可直接赋值
         // 当lists长度不为0，后面请求的数据，加入到lists里面来
@@ -81,15 +100,20 @@ export default {
       }).catch((err) => {
         this.isRepeat = false
         if (err) {
-          this.$alert(err.msg)
+          this.$alert(err.message)
         }
       })
     },
     nextpage () {
-      this.page++
+      // this.page++
       this._getList()
     },
     search (val) {
+      if (typeof val === 'undefined' && this.current === '') {
+        return
+      }
+      this.current = val
+      console.log(val)
       switch (val) {
         // 未结帖
         case 0:
@@ -118,11 +142,16 @@ export default {
         default:
           this.status = ''
           this.tag = ''
+          this.current = ''
           break
       }
     }
   },
   mounted () {
+    let catalog = this.$route.params['catalog']
+    if (typeof catalog !== 'undefined' && catalog !== '') {
+      this.catalog = catalog
+    }
     this._getList()
   }
 }
