@@ -5,7 +5,7 @@
        <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
         <li class="layui-nav-item" v-for="(item, index) in lists" :key="`menu${index}`">
           <a href="">
-            <i class="imooc" :class="item.icon"></i>
+            <i class="layui-icon" :class="item.icon"></i>
             {{item.name}}
           </a>
         </li>
@@ -21,19 +21,19 @@ export default {
     return {
       lists: [{
         name: '我的主页',
-        icon: 'icon-home1'
+        icon: 'layui-icon-home'
       }, {
         name: '基本设置',
-        icon: 'icon-settings'
+        icon: 'layui-icon-set'
       }, {
         name: '我的帖子',
-        icon: 'icon-19DOCUMENT'
+        icon: 'layui-icon-form'
       }, {
         name: '我的消息',
-        icon: 'icon-messagefill'
+        icon: 'layui-icon-reply-fill'
       }, {
         name: '其他设置',
-        icon: 'icon-ico_productService'
+        icon: 'layui-icon-component'
       }]
     }
   }
@@ -41,7 +41,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/custom/iconfont.css';
 .iconfont {
   margin-right: 10px;
 }
