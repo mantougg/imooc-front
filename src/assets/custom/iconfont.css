@@ -1,0 +1,67 @@
+@font-face {
+  font-family: "imooc"; /* Project id 3977106 */
+  src: url('iconfont.woff2?t=1679802238734') format('woff2'),
+       url('iconfont.woff?t=1679802238734') format('woff'),
+       url('iconfont.ttf?t=1679802238734') format('truetype');
+}
+
+.imooc {
+  font-family: "imooc" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-home:before {
+  content: "\e6b8";
+}
+
+.icon-messagefill:before {
+  content: "\e779";
+}
+
+.icon-home1:before {
+  content: "\e722";
+}
+
+.icon-user:before {
+  content: "\e6b5";
+}
+
+.icon-user1:before {
+  content: "\e61c";
+}
+
+.icon-19DOCUMENT:before {
+  content: "\e643";
+}
+
+.icon-ico_productService:before {
+  content: "\e642";
+}
+
+.icon-message-fill:before {
+  content: "\e84a";
+}
+
+.icon-message:before {
+  content: "\e6df";
+}
+
+.icon-certifiedproducts:before {
+  content: "\e632";
+}
+
+.icon-document:before {
+  content: "\ed4f";
+}
+
+.icon-settings-fill:before {
+  content: "\e840";
+}
+
+.icon-settings:before {
+  content: "\e841";
+}
+
