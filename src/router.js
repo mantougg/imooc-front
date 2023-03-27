@@ -13,6 +13,26 @@ const Tempalte1 = () =>
   import(/* webpackChunkName: 'tempalte1' */ './views/channels/Template1.vue')
 const Center = () =>
   import(/* webpackChunkName: 'center' */ './views/Center.vue')
+const UserHome = () =>
+  import(/* webpackChunkName: 'userHome' */ './views/User.vue')
+const UserCenter = () =>
+  import(/* webpackChunkName: 'userCenter' */ './components/user/Center.vue')
+const UserSettings = () =>
+  import(/* webpackChunkName: 'userSettings' */ './components/user/Settings.vue')
+const UserPost = () =>
+  import(/* webpackChunkName: 'userPost' */ './components/user/Post.vue')
+const UserOthers = () =>
+  import(/* webpackChunkName: 'userOthers' */ './components/user/Others.vue')
+const UserMsg = () =>
+  import(/* webpackChunkName: 'userMsg' */ './components/user/Msg.vue')
+const MyInfo = () =>
+  import(/* webpackChunkName: 'myInfo' */ './components/user/common/MyInfo.vue')
+const Accounts = () =>
+  import(/* webpackChunkName: 'myInfo' */ './components/user/common/Accounts.vue')
+const Password = () =>
+  import(/* webpackChunkName: 'myInfo' */ './components/user/common/Password.vue')
+const PicUpload = () =>
+  import(/* webpackChunkName: 'myInfo' */ './components/user/common/PicUpload.vue')
 
 Vue.use(Router)
 
@@ -56,9 +76,53 @@ export default new Router({
       component: Forget
     },
     {
+      path: '/user/:uid',
+      name: 'home',
+      props: true,
+      component: UserHome
+    },
+    {
       path: '/center',
-      name: 'center',
-      component: Center
+      component: Center,
+      linkExactActiveClass: 'layui-this',
+      children: [{
+        path: '',
+        name: 'center',
+        component: UserCenter
+      }, {
+        path: 'set',
+        name: 'set',
+        component: UserSettings,
+        children: [{
+          path: '',
+          name: 'info',
+          component: MyInfo
+        }, {
+          path: 'account',
+          name: 'account',
+          component: Accounts
+        }, {
+          path: 'passwd',
+          name: 'passwd',
+          component: Password
+        }, {
+          path: 'pic',
+          name: 'pic',
+          component: PicUpload
+        }]
+      }, {
+        path: 'posts',
+        name: 'posts',
+        component: UserPost
+      }, {
+        path: 'msg',
+        name: 'msg',
+        component: UserMsg
+      }, {
+        path: 'others',
+        name: 'others',
+        component: UserOthers
+      }]
     }
   ]
 })
