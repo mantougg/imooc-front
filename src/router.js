@@ -28,11 +28,15 @@ const UserMsg = () =>
 const MyInfo = () =>
   import(/* webpackChunkName: 'myInfo' */ './components/user/common/MyInfo.vue')
 const Accounts = () =>
-  import(/* webpackChunkName: 'myInfo' */ './components/user/common/Accounts.vue')
+  import(/* webpackChunkName: 'accounts' */ './components/user/common/Accounts.vue')
 const Password = () =>
-  import(/* webpackChunkName: 'myInfo' */ './components/user/common/Password.vue')
+  import(/* webpackChunkName: 'password' */ './components/user/common/Password.vue')
 const PicUpload = () =>
-  import(/* webpackChunkName: 'myInfo' */ './components/user/common/PicUpload.vue')
+  import(/* webpackChunkName: 'picUpload' */ './components/user/common/PicUpload.vue')
+const MyPost = () =>
+  import(/* webpackChunkName: 'myPost' */ './components/user/common/MyPost.vue')
+const MyCollection = () =>
+  import(/* webpackChunkName: 'myCollection' */ './components/user/common/MyCollection.vue')
 
 Vue.use(Router)
 
@@ -113,7 +117,16 @@ export default new Router({
       }, {
         path: 'posts',
         name: 'posts',
-        component: UserPost
+        component: UserPost,
+        children: [{
+          path: '',
+          name: 'mypost',
+          component: MyPost
+        }, {
+          path: 'mycollection',
+          name: 'mycollection',
+          component: MyCollection
+        }]
       }, {
         path: 'msg',
         name: 'msg',
