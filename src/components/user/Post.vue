@@ -1,5 +1,5 @@
 <template>
-  <div class="fly-panel fly-panel-user pad20">
+  <div class="fly-panel fly-panel-user" pad20>
     <div class="layui-tab layui-tab-brief">
       <ul class="layui-tab-title">
         <li><router-link :to="{ name: 'mypost' }">我的发帖</router-link></li>
