@@ -3,14 +3,18 @@
     <div class="panel">
       <div class="layui-container">
         <ul>
-          <router-link tag="li" to="/" class="layui-hide-xs">
-            <a href="/">首页</a>
+          <router-link custom v-slot="{ navigate }" to="/" class="layui-hide-xs">
+            <li>
+              <a href="/" @click="navigate" @keypress.enter="navigate" role="link">首页</a>
+            </li>
           </router-link>
-          <router-link v-for="item in lists" :key="item.name" tag="li" :to="item.path">
-            <a href="">
-              {{item.name}}
-              <span v-if="item.isNew" class="layui-badge-dot"></span>
-            </a>
+          <router-link v-for="item in lists" :key="item.name" custom v-slot="{ navigate }" :to="item.path">
+            <li>
+              <a href="" @click="navigate" @keypress.enter="navigate" role="link">
+                {{item.name}}
+                <span v-if="item.isNew" class="layui-badge-dot"></span>
+              </a>
+            </li>
           </router-link>
           <!-- 用户登录后显示 -->
           <template v-if="isLogin">

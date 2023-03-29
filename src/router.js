@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
+import jwt from 'jsonwebtoken'
+import dayjs from 'dayjs'
 
 const Login = () => import(/* webpackChunkName: 'login' */ './views/Login.vue')
 const Reg = () => import(/* webpackChunkName: 'reg' */ './views/Reg.vue')
@@ -40,12 +43,11 @@ const MyCollection = () =>
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   linkExactActiveClass: 'layui-this',
   routes: [
     {
       path: '/',
-      name: 'index',
       component: Home,
       children: [{
         path: '',
@@ -88,6 +90,7 @@ export default new Router({
     {
       path: '/center',
       component: Center,
+      meta: { requiresAuth: true },
       linkExactActiveClass: 'layui-this',
       children: [{
         path: '',
@@ -95,7 +98,6 @@ export default new Router({
         component: UserCenter
       }, {
         path: 'set',
-        name: 'set',
         component: UserSettings,
         children: [{
           path: '',
@@ -116,7 +118,6 @@ export default new Router({
         }]
       }, {
         path: 'posts',
-        name: 'posts',
         component: UserPost,
         children: [{
           path: '',
@@ -139,3 +140,37 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  if (token !== '' && token !== null) {
+    const payload = jwt.decode(token)
+    if (dayjs().isBefore(dayjs(payload.exp * 1000))) {
+      // 取localStorage里面缓存的token信息+用户信息
+    // 8~24小时，refresh token 1个月
+      store.commit('setToken', token)
+      store.commit('setUserInfo', userInfo)
+      store.commit('setIsLogin', true)
+    } else {
+      localStorage.clear()
+    }
+  }
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const isLogin = store.state.isLogin
+    // 需要用户登录的页面，进行区别
+    if (isLogin) {
+    // 已经登录的状态
+    // 权限判断，meta元数据
+      next()
+    } else {
+      // 未登录的状态
+      next('/login')
+    }
+  } else {
+    // 公共页面，不需要用户登录
+    next()
+  }
+})
+
+export default router

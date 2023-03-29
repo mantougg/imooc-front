@@ -18,7 +18,7 @@
         <div class="panel border">
           <div class="title">快捷方式</div>
           <div class="content" style="height: auto">
-            <ui class="layui-row layui-col-space10">
+            <ul class="layui-row layui-col-space10">
               <li class="layui-col-sm3 layui-col-xs4">
                 <a>
                   <div class="layui-icon layui-icon-set shortcut"></div>
@@ -91,7 +91,7 @@
                   <span>修改密码</span>
                 </a>
               </li>
-            </ui>
+            </ul>
           </div>
         </div>
       </div>
