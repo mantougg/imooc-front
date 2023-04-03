@@ -32,13 +32,22 @@ export default {
 
 @for $i from 0 through 5 {
   .pd#{$i * 10} {
-    padding: $i * 10 px;
+    padding: $i * 10px !important;
   }
   .pl#{$i * 10} {
-    padding-left: $i * 10 px;
+    padding-left: $i * 10px;
   }
   .pr#{$i * 10} {
-   padding-right: $i * 10 px;
+   padding-right: $i * 10px;
+  }
+  .mg#{$i * 10} {
+    margin: $i * 10px !important;
+  }
+  .ml#{$i * 10} {
+    margin-left: $i * 10px;
+  }
+  .mr#{$i * 10} {
+   margin-right: $i * 10px;
   }
 }
 

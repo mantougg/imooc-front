@@ -5,7 +5,7 @@
       <i class="fly-mid"></i>
       <a href="javascript:;" class="fly-link" id="LAY_signinHelp" @click="showInfo()">说明</a>
       <i class="fly-mid"></i>
-      <a href="javascript:;" class="fly-link" id="LAY_signinTop">活跃榜<span class="layui-badge-dot"></span></a>
+      <a href="javascript:;" class="fly-link" id="LAY_signinTop" @click="showSign()">活跃榜<span class="layui-badge-dot"></span></a>
       <span class="fly-signin-days">已连续签到<cite>16</cite>天</span>
     </div>
     <div class="fly-panel-main fly-signin-main">
@@ -69,6 +69,34 @@
         </div>
       </div>
     </div>
+    <div class="modal" v-show="showList" @click="close()">
+      <div class="mask"></div>
+      <div class="layui-layer layui-layer-page" :class="{ 'active': showList }">
+        <div class="layui-layer-title">
+          签到活跃榜
+          <i class="layui-icon layui-icon-close pull-right" @click="close()"></i>
+        </div>
+        <div class="layui-layer-content pd0">
+          <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title">
+              <li :class="{ 'layui-this': current === 0 }" @click="current = 0">最新签到</li>
+              <li :class="{ 'layui-this': current === 1 }" @click="current = 1">今日最快</li>
+              <li :class="{ 'layui-this': current === 2 }" @click="current = 2">总签到榜</li>
+            </ul>
+            <div class="layui-tab-content">
+              <ul class="layui-tab-item layui-show">
+                <li v-for="(item, index) in lists" :key="`sign${index}`">
+                  <img src="/img/tuzi.png" alt="" class="mr10">
+                  <cite class="fly-link">{{item.name}}</cite>
+                  <span class="fly-grey" v-if="current !== 2">签到于{{item.created}}</span>
+                  <span class="fly-grey" v-else>已经连续签到<i class="orange">{{item.count}}</i>天</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -77,15 +105,38 @@ export default {
   name: 'sign',
   data () {
     return {
-      isShow: false
+      isShow: false,
+      showList: false,
+      current: 0,
+      lists: [{
+        name: '王飞0',
+        count: 33,
+        created: '2023-04-03'
+      }, {
+        name: '王飞1',
+        count: 5,
+        created: '2023-04-03'
+      }, {
+        name: '王飞2',
+        count: 40,
+        created: '2023-04-03'
+      }, {
+        name: '王飞3',
+        count: 100,
+        created: '2023-04-03'
+      }]
     }
   },
   methods: {
     showInfo () {
       this.isShow = true
     },
+    showSign () {
+      this.showList = true
+    },
     close () {
       this.isShow = false
+      this.showList = false
     }
   }
 }
@@ -138,6 +189,23 @@ export default {
     padding: 20px;
     p {
       margin: 0;
+    }
+  }
+  .layui-tab-content {
+    padding: 0 10px;
+  }
+  .layui-tab-item {
+    line-height: 45px;
+    li {
+      border-bottom: 1px solid #dcdcdc;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    img {
+      width: 30px;
+      height: 30px;
+      border-radius: 2px;
     }
   }
 }
