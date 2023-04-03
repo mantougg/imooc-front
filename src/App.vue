@@ -53,4 +53,12 @@ export default {
 .text-right {
   text-align: right;
 }
+
+.orange {
+  color: #ff5722;
+}
+
+.pull-right {
+  float: right;
+}
 </style>
