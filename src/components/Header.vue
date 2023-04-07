@@ -119,7 +119,7 @@ export default {
       this.$confirm('确定退出吗？', () => {
         localStorage.clear()
         this.$store.commit('setToken', '')
-        this.$store.commit('setUserInfo', '')
+        this.$store.commit('setUserInfo', {})
         this.$store.commit('setIsLogin', false)
         this.$router.push('/').catch(() => {})
       }, () => {})

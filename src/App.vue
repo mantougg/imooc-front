@@ -35,19 +35,22 @@ export default {
     padding: $i * 10px !important;
   }
   .pl#{$i * 10} {
-    padding-left: $i * 10px;
+    padding-left: $i * 10px !important;
   }
   .pr#{$i * 10} {
-   padding-right: $i * 10px;
+   padding-right: $i * 10px !important;
   }
   .mg#{$i * 10} {
     margin: $i * 10px !important;
   }
   .ml#{$i * 10} {
-    margin-left: $i * 10px;
+    margin-left: $i * 10px !important;
   }
   .mr#{$i * 10} {
-   margin-right: $i * 10px;
+   margin-right: $i * 10px !important;
+  }
+  .mt#{$i * 10} {
+   margin-top: $i * 10px !important;
   }
 }
 
