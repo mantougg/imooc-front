@@ -37,6 +37,12 @@ export default {
   .pl#{$i * 10} {
     padding-left: $i * 10px !important;
   }
+  .pt#{$i * 10} {
+   padding-top: $i * 10px !important;
+  }
+  .pb#{$i * 10} {
+   padding-bottom: $i * 10px !important;
+  }
   .pr#{$i * 10} {
    padding-right: $i * 10px !important;
   }
@@ -47,10 +53,13 @@ export default {
     margin-left: $i * 10px !important;
   }
   .mr#{$i * 10} {
-   margin-right: $i * 10px !important;
+    margin-right: $i * 10px !important;
   }
   .mt#{$i * 10} {
-   margin-top: $i * 10px !important;
+    margin-top: $i * 10px !important;
+  }
+  .mb#{$i * 10} {
+    margin-bottom: $i * 10px !important;
   }
 }
 

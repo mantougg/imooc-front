@@ -93,6 +93,16 @@ export default {
         gender: this.gender
       }).then((res) => {
         if (res.code === 200) {
+          this.$store.commit('setUserInfo', {
+            ...this.$store.state.userInfo,
+            ...{
+              username: this.username,
+              name: this.name,
+              location: this.location,
+              regmark: this.regmark,
+              gender: this.gender
+            }
+          })
           this.$alert('更新成功')
         }
       })
