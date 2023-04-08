@@ -13,8 +13,12 @@ const updateUserInfo = (data) => axios.post('/user/basic', data)
 // 确认修改用户名
 const updateUsername = (data) => axios.get('/public/reset-email?' + qs.stringify(data))
 
+// 确认修改密码
+const updatePassword = (data) => axios.get('/public/reset-password?' + qs.stringify(data))
+
 export {
   userSign,
   updateUserInfo,
-  updateUsername
+  updateUsername,
+  updatePassword
 }

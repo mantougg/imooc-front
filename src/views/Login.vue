@@ -127,17 +127,20 @@ export default {
     }
   },
   mounted () {
-    let sid = ''
-    if (localStorage.getItem('sid')) {
-      sid = localStorage.getItem('sid')
-    } else {
-      sid = uuid()
-      localStorage.setItem('sid', sid)
-    }
-    this.$store.commit('setSid', sid)
-    this._getCode()
+    this.loadingCode()
   },
   methods: {
+    loadingCode () {
+      let sid = ''
+      if (localStorage.getItem('sid')) {
+        sid = localStorage.getItem('sid')
+      } else {
+        sid = uuid()
+        localStorage.setItem('sid', sid)
+      }
+      this.$store.commit('setSid', sid)
+      this._getCode()
+    },
     _getCode () {
       let sid = this.$store.state.sid
       getCode(sid).then((res) => {

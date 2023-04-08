@@ -30,6 +30,7 @@ localize('zh_CN', {
   names: {
     email: '邮箱',
     password: '密码',
+    repassword: '确认密码',
     name: '昵称',
     username: '账号',
     code: '验证码'
@@ -44,6 +45,9 @@ localize('zh_CN', {
       min: (field, { length }) => {
         return `请在${field}输入至少${length}个字符`
       }
+    },
+    repassword: {
+      confirmed: '两次密码输入不一致'
     }
   }
 })

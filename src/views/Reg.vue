@@ -55,7 +55,8 @@
                   <div class="layui-form-item">
                     <validation-provider
                       name="password"
-                      rules="required|min:6|max:16|confirmed:confirmation"
+                      rules="required|min:6|max:16"
+                      vid="confirmation"
                       v-slot="{errors}"
                     >
                       <div class="layui-row">
@@ -78,7 +79,7 @@
                     </validation-provider>
                   </div>
                   <div class="layui-form-item">
-                    <validation-provider v-slot="{ errors }" vid="confirmation">
+                    <validation-provider v-slot="{ errors }" rules="required|confirmed:confirmation">
                       <div class="layui-row">
                         <label for="L_repass" class="layui-form-label">确认密码</label>
                         <div class="layui-input-inline">
