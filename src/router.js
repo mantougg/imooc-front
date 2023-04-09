@@ -46,6 +46,8 @@ const Confirm = () =>
   import(/* webpackChunkName: 'confirm' */ './views/Confirm.vue')
 const Reset = () =>
   import(/* webpackChunkName: 'reset' */ './views/Reset.vue')
+const Add = () =>
+  import(/* webpackChunkName: 'add' */ './components/contents/Add.vue')
 
 Vue.use(Router)
 
@@ -79,6 +81,11 @@ const router = new Router({
       path: '/reset',
       name: 'reset',
       component: Reset
+    },
+    {
+      path: '/add',
+      name: 'add',
+      component: Add
     },
     {
       path: '/reg',
