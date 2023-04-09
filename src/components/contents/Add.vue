@@ -10,7 +10,7 @@
             </ul>
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
               <div class="layui-tab-item layui-show">
-                <form action="" method="post">
+                <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
                       <label class="layui-form-label">所在专栏</label>
@@ -36,6 +36,7 @@
                       </div>
                     </div>
                   </div>
+                  <i-edit></i-edit>
                   <div class="layui-form-item">
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
@@ -56,18 +57,37 @@
                     </div>
                   </div>
                   <div class="layui-form-item">
-                    <label for="L_vercode" class="layui-form-label">人类验证</label>
-                    <div class="layui-input-inline">
-                      <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid">
-                      <span style="color: #c00;">1+1=?</span>
-                    </div>
+                    <validation-provider
+                      name="code"
+                      ref="codefield"
+                      rules="required|length:4"
+                      v-slot="{errors}"
+                    >
+                      <div class="layui-row">
+                        <label for="L_vercode" class="layui-form-label">验证码</label>
+                        <div class="layui-input-inline">
+                          <input
+                            type="text"
+                            name="code"
+                            v-model="code"
+                            placeholder="请输入验证码"
+                            autocomplete="off"
+                            class="layui-input"
+                          />
+                        </div>
+                        <div class>
+                          <span class="svg" style="color: #c00;" @click="_getCode()" v-html="svg"></span>
+                        </div>
+                      </div>
+                      <div class="layui-form-mid">
+                        <span style="color: #c00;">{{errors[0]}}</span>
+                      </div>
+                    </validation-provider>
                   </div>
                   <div class="layui-form-item">
-                    <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                    <button class="layui-btn" @click="validate().then(submit)">立即发布</button>
                   </div>
-                </form>
+                </validation-observer>
               </div>
             </div>
           </div>
@@ -78,8 +98,15 @@
 </template>
 
 <script>
+import Edit from '../modules/editor/index.vue'
+import CodeMixin from '@/mixins/CodeMixin'
+
 export default {
   name: 'add',
+  mixins: [CodeMixin],
+  components: {
+    'i-edit': Edit
+  },
   data () {
     return {
       isSelect: false,
@@ -111,7 +138,11 @@ export default {
     },
     chooseFav (item, index) {
       this.favIndex = index
-    }
+    },
+    submit () {}
+  },
+  mounted () {
+    console.log('测试区mixin里的code', this.code)
   }
 }
 </script>
