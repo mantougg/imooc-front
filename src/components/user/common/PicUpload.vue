@@ -18,6 +18,7 @@
 <script>
 import { uploadImg } from '@/api/content'
 import { updateUserInfo } from '@/api/user'
+import config from '@/config'
 
 export default {
   name: 'pic-upload',
@@ -28,7 +29,7 @@ export default {
     }
   },
   methods: {
-    async upload (e) {
+    upload (e) {
       const self = this
       let file = e.target.files
       let formData = new FormData()
@@ -37,10 +38,14 @@ export default {
         self.formData = formData
       }
       // 上传图片之后 -> uploadImg
-      await uploadImg(formData).then(async (res) => {
-        self.pic = res.data
+      uploadImg(formData).then((res) => {
+        if (res.code === 200) {
+          const baseUrl = process.env.NODE_ENV === 'production'
+            ? config.baseUrl.pro : config.baseUrl.dev
+          self.pic = baseUrl + res.data
+        }
         // 更新用户基本资料
-        await updateUserInfo({ pic: self.pic }).then(res => {
+        updateUserInfo({ pic: self.pic }).then(res => {
           if (res.code === 200) {
             // 修改全局的store内的用户基础信息
             let user = self.$store.state.userInfo
@@ -49,6 +54,7 @@ export default {
             self.$alert('图片上传成功')
           }
         })
+        document.getElementById('pic').value = ''
       })
     }
   }
