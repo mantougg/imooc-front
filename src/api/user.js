@@ -16,9 +16,15 @@ const updateUsername = (data) => axios.get('/public/reset-email?' + qs.stringify
 // 确认修改密码
 const updatePassword = (data) => axios.get('/public/reset-password?' + qs.stringify(data))
 
+// 修改用户密码接口
+const changePasswd = (data) => axios.post('/user/change-password', {
+  ...data
+})
+
 export {
   userSign,
   updateUserInfo,
   updateUsername,
-  updatePassword
+  updatePassword,
+  changePasswd
 }

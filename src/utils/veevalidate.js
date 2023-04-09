@@ -29,6 +29,7 @@ localize('zh_CN', {
   // key为name, value为对应的中文field名称
   names: {
     email: '邮箱',
+    nowpass: '当前密码',
     password: '密码',
     repassword: '确认密码',
     name: '昵称',
