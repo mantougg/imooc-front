@@ -24,25 +24,29 @@
           <span>
             <i class="iconfont icon-yulan1"></i>
           </span>
-          <textarea class="layui-textarea fly-edit" name="" id="" cols="30" rows="10"></textarea>
+          <textarea class="layui-textarea" name="" id="" cols="30" rows="10"></textarea>
         </div>
       </div>
     </div>
     <i-face :ctrl="$refs.face" :isShow="faceStatus" @closeEvent="closeface()"></i-face>
+    <i-img-upload :isShow="imgStatus"></i-img-upload>
   </div>
 </template>
 
 <script>
 import Face from './Face.vue'
+import ImgUpload from './ImgUpload.vue'
 
 export default {
   name: 'editor',
   components: {
-    'i-face': Face
+    'i-face': Face,
+    'i-img-upload': ImgUpload
   },
   data () {
     return {
-      faceStatus: false
+      faceStatus: false,
+      imgStatus: true
     }
   },
   methods: {
@@ -53,7 +57,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @keyframes bounceIn {
   0% {
     opacity: 0;
@@ -98,5 +102,11 @@ export default {
   vertical-align: middle;
   position: relative;
   top: 4px;
+}
+
+.edit-content {
+  position: absolute;
+  top: 45px;
+  left: 0;
 }
 </style>

@@ -54,9 +54,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.edit-content {
-  position: absolute;
-  top: 45px;
-  left: 0;
-}
 </style>
