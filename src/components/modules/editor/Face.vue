@@ -32,6 +32,7 @@ export default {
   methods: {
     handleFaceClick (item) {
       this.$emit('addEvent', item)
+      this.$emit('closeEvent')
     },
     handleBodyClick (e) {
       // e.stopPropagetion()

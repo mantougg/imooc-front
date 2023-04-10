@@ -6,7 +6,7 @@
           <span ref="face" @click="() => { this.faceStatus = !this.faceStatus }">
             <i class="iconfont icon-yxj-expression"></i>
           </span>
-          <span>
+          <span ref="img" @click="() => { this.imgStatus = !this.imgStatus }">
             <i class="iconfont icon-tupian"></i>
           </span>
           <span>
@@ -29,7 +29,7 @@
       </div>
     </div>
     <i-face :ctrl="$refs.face" :isShow="faceStatus" @closeEvent="closeface()"></i-face>
-    <i-img-upload :isShow="imgStatus"></i-img-upload>
+    <i-img-upload :ctrl="$refs.img" :isShow="imgStatus" @closeEvent="closeImg()"></i-img-upload>
   </div>
 </template>
 
@@ -46,12 +46,15 @@ export default {
   data () {
     return {
       faceStatus: false,
-      imgStatus: true
+      imgStatus: false
     }
   },
   methods: {
     closeface () {
       this.faceStatus = false
+    },
+    closeImg () {
+      this.imgStatus = false
     }
   }
 }
@@ -106,7 +109,7 @@ export default {
 
 .edit-content {
   position: absolute;
-  top: 45px;
+  top: 40px;
   left: 0;
 }
 </style>
