@@ -1,11 +1,11 @@
 <template>
   <transition name="fade">
-    <div ref="wrapper" class="layui-layer layui-layer-page layui-layer-border edit-content" v-show="isShow">
+    <div class="layui-layer-page layui-layer-border edit-content" v-show="isShow">
       <div class="layui-layer-title">插入图片</div>
       <div class="layui-layer-content">
         <ul class="layui-form layui-form-pane">
           <li class="layui-form-item">
-            <label for="" class="layui-form-label">URL</label>
+            <label class="layui-form-label">URL</label>
             <div class="layui-input-inline">
               <input v-model="pic" class="layui-input" type="text" id="fileInput" placeholder="粘贴图片地址或者点击上传">
             </div>
@@ -38,8 +38,7 @@ export default {
     isShow: {
       type: Boolean,
       default: false
-    },
-    ctrl: {}
+    }
   },
   data () {
     return {
@@ -53,16 +52,6 @@ export default {
       this.$emit('closeEvent')
       this.pic = ''
       this.formData = ''
-    },
-    handleBodyClick (e) {
-      // e.stopPropagetion()
-      // 触发隐藏本组件的关闭事件，改变isShow
-      // 判断是否点击到了非控制ICON + 本组件以外的地方
-      if (!(this.ctrl.contains(e.target) || this.$refs.wrapper.contains(e.target))) {
-        this.$emit('closeEvent')
-        this.pic = ''
-        this.formData = ''
-      }
     },
     upload (e) {
       const self = this
@@ -95,14 +84,6 @@ export default {
         this.$emit('closeEvent')
       }, 0)
     }
-  },
-  mounted () {
-    this.$nextTick(() => {
-      document.querySelector('body').addEventListener('click', this.handleBodyClick)
-    })
-  },
-  beforeDestroy () {
-    document.querySelector('body').removeEventListener('click', this.handleBodyClick)
   }
 }
 </script>

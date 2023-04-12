@@ -2,60 +2,149 @@
   <div class="edit-wrap">
     <div class="layui-form-item layui-form-text">
       <div class="layui-input-block">
-        <div class="layui-unselect fly-edit">
-          <span ref="face" @click="() => { this.faceStatus = !this.faceStatus }">
+        <div class="layui-unselect fly-edit" ref="icons">
+          <span ref="face" @click="choose(0)">
             <i class="iconfont icon-yxj-expression"></i>
           </span>
-          <span ref="img" @click="() => { this.imgStatus = !this.imgStatus }">
+          <span ref="img" @click="choose(1)">
             <i class="iconfont icon-tupian"></i>
           </span>
-          <span>
+          <span ref="link" @click="choose(2)">
             <i class="iconfont icon-lianjie"></i>
           </span>
-          <span class="quote">
+          <span class="quote" @click="addHR()">
             "
           </span>
-          <span>
+          <span @click="choose(4)">
             <i class="iconfont icon-emwdaima"></i>
           </span>
-          <span>
+          <span @click="choose(5)">
             hr
           </span>
-          <span>
+          <span @click="choose(6)">
             <i class="iconfont icon-yulan1"></i>
           </span>
-          <textarea class="layui-textarea" name="" id="" cols="30" rows="10"></textarea>
         </div>
+        <textarea id="edit" v-model="content" class="layui-textarea fly-editor" @focus="focusEvent()" @blur="blurEvent()" name="content"></textarea>
       </div>
     </div>
-    <i-face :ctrl="$refs.face" :isShow="faceStatus" @closeEvent="closeface()"></i-face>
-    <i-img-upload :ctrl="$refs.img" :isShow="imgStatus" @closeEvent="closeImg()"></i-img-upload>
+    <div ref="modal">
+      <i-face :ctrl="$refs.face" :isShow="this.current === 0" @closeEvent="closeModal()" @addEvent="addFace"></i-face>
+      <i-img-upload :ctrl="$refs.img" :isShow="this.current === 1" @closeEvent="closeModal()" @addEvent="addImg"></i-img-upload>
+      <i-link-add :ctrl="$refs.link" :isShow="this.current === 2" @closeEvent="closeModal()" @addEvent="addLink"></i-link-add>
+      <i-preview :ctrl="$refs.preview" :content="content" :isShow="this.current === 6" @closeEvent="closeModal()"></i-preview>
+    </div>
   </div>
 </template>
 
 <script>
 import Face from './Face.vue'
 import ImgUpload from './ImgUpload.vue'
+import LinkAdd from './LinkAdd.vue'
+import Preview from './Preview.vue'
 
 export default {
   name: 'editor',
   components: {
     'i-face': Face,
-    'i-img-upload': ImgUpload
+    'i-img-upload': ImgUpload,
+    'i-link-add': LinkAdd,
+    'i-preview': Preview
   },
   data () {
     return {
-      faceStatus: false,
-      imgStatus: false
+      current: '',
+      content: '',
+      pos: ''
     }
   },
   methods: {
-    closeface () {
-      this.faceStatus = false
+    closeModal () {
+      this.current = ''
     },
-    closeImg () {
-      this.imgStatus = false
+    choose (index) {
+      if (index === this.current) {
+        this.closeModal()
+      } else {
+        this.current = index
+      }
+    },
+    handleBodyClick (e) {
+      // e.stopPropagetion()
+      // 触发隐藏本组件的关闭事件，改变isShow
+      // 判断是否点击到了非控制ICON + 本组件以外的地方
+      if (!(this.$refs.icons.contains(e.target) ||
+        this.$refs.modal.contains(e.target))) {
+        this.closeModal()
+      }
+    },
+    focusEvent () {
+      this.getPos()
+    },
+    blurEvent () {
+      this.getPos()
+    },
+    getPos () {
+      let cursorPos = 0
+      let elem = document.getElementById('edit')
+      if (document.selection) {
+        // IE
+        let selectRange = document.selection.createRange()
+        selectRange.moveSart('character', -elem.ariaValueMax.length)
+        cursorPos = selectRange.text.length
+      } else if (elem.selectionStart || elem.selectionStart === 0) {
+        cursorPos = elem.selectionStart
+      }
+      this.pos = cursorPos
+      console.log('🚀 ~ file: index.vue:96 ~ getPos ~ cursorPos:', cursorPos)
+    },
+    addFace (item) {
+      const insertContent = ` face${item}`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    addImg (item) {
+      const insertContent = ` img[${item}]`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    addLink (item) {
+      const insertContent = ` a(${item})[${item}]`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    addCode (item) {
+      const insertContent = ` \n[pre]\n${item}[/pre]`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    addQuote (item) {
+      const insertContent = ` \n[quote]\n${item}\n[/quote]`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    addHR () {
+      this.closeModal()
+      const insertContent = ` \n[hr]`
+      this.insert(insertContent)
+      this.pos += insertContent.length
+    },
+    insert (val) {
+      if (typeof this.content === 'undefined') {
+        return
+      }
+      let tmp = this.content.split('')
+      tmp.splice(this.pos, 0, val)
+      this.content = tmp.join('')
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      document.querySelector('body').addEventListener('click', this.handleBodyClick)
+    })
+  },
+  beforeDestroy () {
+    document.querySelector('body').removeEventListener('click', this.handleBodyClick)
   }
 }
 </script>
@@ -97,7 +186,7 @@ export default {
 .edit-wrap {
   position: relative;
 }
-.fly-edit {
+.fly-editor {
   height: 260px;
 }
 .quote {
