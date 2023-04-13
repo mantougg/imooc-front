@@ -1,4 +1,11 @@
 import faces from '@/assets/js/face'
+const htmlEncode = (html) => {
+  let temp = document.createElement('div')
+  temp.textContent !== undefined ? (temp.textContent = html) : (temp.innerHTML = html)
+  const output = temp.innerHTML
+  temp = null
+  return output
+}
 
 const escapeHtml = (val = '') => {
   if (!val) return ''
@@ -46,7 +53,17 @@ const escapeHtml = (val = '') => {
   result = result.replace(/\s\[quote\]/g, '<div class="layui-elem-quote">')
   result = result.replace(/\[\/quote\]/g, '</div>')
   // 替换代码块
+  const code = /\s(\[\/?pre(.+?)[^\]]*\])|\[[^\]]*\]/g
+  if (code.test(result)) {
+    const group = result.match(code)
+    group.map((item) => {
+      result = result.replace(item, htmlEncode(item))
+    })
+    result = result.replace(/\[pre\]/g, '<pre>')
+    result = result.replace(/\[\/pre\]/g, '</pre>')
+  }
   // 替换hr
+  result = result.replace(/\s\[hr\]/g, '<hr>')
   return result
 }
 

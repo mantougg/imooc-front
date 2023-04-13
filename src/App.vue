@@ -83,4 +83,10 @@ export default {
 .pull-right {
   float: right;
 }
+
+.d-hide {
+  position: absolute;
+  overflow: hidden;
+  height: 0;
+}
 </style>

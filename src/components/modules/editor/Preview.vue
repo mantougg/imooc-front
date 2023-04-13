@@ -27,6 +27,15 @@ export default {
       return escapeHtml(this.content)
     }
   },
+  watch: {
+    isShow (n, o) {
+      if (n) {
+        this.$store.commit('setHide', true)
+      } else {
+        this.$store.commit('setHide', false)
+      }
+    }
+  },
   methods: {
     cancel () {
       this.$emit('closeEvent')
@@ -36,7 +45,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #preview {
   position: fixed;
   width: 100%;
@@ -45,6 +54,21 @@ export default {
   top: 0;
   left: 0;
   z-index: 10000;
+  overflow-y: auto;
+}
+
+pre {
+  position: relative;
+  margin: 10px 0;
+  padding: 15px;
+  line-height: 20px;
+  border-left-width: 6px;
+  background: #f2f2f2;
+  color: #333;
+  font-family: 'Courier New', Courier, monospace, serif;
+  font-size: 12px;
+  border: none;
+  border-left: 5px solid #ddd;
 }
 
 </style>
