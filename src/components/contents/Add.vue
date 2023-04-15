@@ -186,7 +186,16 @@ export default {
         code: this.code,
         sid: this.$store.state.sid
       }).then(res => {
-        console.log('🚀 ~ file: Add.vue:181 ~ submit ~ res:', res)
+        if (res.code === 200) {
+          // 清空已发布的内容
+          localStorage.setItem('addData', '')
+          this.$alert('发帖成功~~2s后跳转')
+          setTimeout(() => {
+            this.$router.push({ name: 'index' })
+          }, 2000)
+        } else {
+          this.$alert(res.msg)
+        }
       })
     },
     add (val) {

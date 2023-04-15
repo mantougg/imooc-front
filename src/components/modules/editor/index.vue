@@ -136,7 +136,7 @@ export default {
     },
     addHR () {
       this.closeModal()
-      const insertContent = ` \n[hr]`
+      const insertContent = ` \n[hr]\n`
       this.insert(insertContent)
       this.pos += insertContent.length
     },
@@ -214,5 +214,10 @@ export default {
   position: absolute;
   top: 40px;
   left: 0;
+  background: #fff;
+}
+
+.layui-layer-prompt {
+  box-shadow: 0 0 20px rgba(0,0,0,.2);
 }
 </style>

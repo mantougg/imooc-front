@@ -27,6 +27,11 @@
           <span class="layui-icon layui-icon-search"></span>
           <router-link :to="{ name: 'add' }" class="layui-btn">发表新帖</router-link>
         </div>
+        <div class="layui-hide-sm layui-show-xs-block"
+        style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
+          <span class="layui-icon layui-icon-search"></span>
+          <router-link :to="{ name: 'add' }" class="layui-btn">发表新帖</router-link>
+        </div>
       </div>
     </div>
   </div>

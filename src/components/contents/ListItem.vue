@@ -31,7 +31,7 @@
             {{item.answer}}
           </span>
         </div>
-        <div class="fly-list-badge" v-show="item.tags.length > 0">
+        <div class="fly-list-badge" v-show="item.tags.length > 0 && item.tags[0].name !== ''">
           <span class="layui-badge" v-for="(tag, index) in item.tags" :key="`tag${index}`"
           :class="tag.class">{{tag.name}}</span>
         </div>
@@ -48,9 +48,13 @@
 </template>
 
 <script>
-import moment from 'moment'
-import 'moment/locale/zh-cn'
+import moment from 'dayjs'
+import 'dayjs/locale/zh-cn'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import * as _ from 'lodash'
+
+moment.extend(relativeTime)
+
 export default {
   name: 'listitem',
   props: {
@@ -106,7 +110,7 @@ export default {
         return moment(date).format('YYYY-MM-DD')
       } else {
         // 1小时前，XX小时前，X天前
-        return moment(date).from(moment())
+        return moment(date).locale('zh-cn').from(moment())
       }
     }
   }
