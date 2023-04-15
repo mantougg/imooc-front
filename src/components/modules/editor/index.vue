@@ -45,6 +45,12 @@ import Preview from './Preview.vue'
 
 export default {
   name: 'editor',
+  props: {
+    initContent: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
     'i-face': Face,
     'i-img-upload': ImgUpload,
@@ -56,6 +62,11 @@ export default {
       current: '',
       content: '',
       pos: ''
+    }
+  },
+  watch: {
+    initContent (n) {
+      this.content = n
     }
   },
   methods: {
@@ -137,6 +148,9 @@ export default {
       tmp.splice(this.pos, 0, val)
       this.content = tmp.join('')
     }
+  },
+  updated () {
+    this.$emit('changeContent', this.content)
   },
   mounted () {
     this.$nextTick(() => {

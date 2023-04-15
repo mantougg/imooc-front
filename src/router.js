@@ -85,6 +85,7 @@ const router = new Router({
     {
       path: '/add',
       name: 'add',
+      meta: { requiresAuth: true },
       component: Add
     },
     {
