@@ -149,8 +149,11 @@
             <!-- <li class="fly-none">消灭零回复</li> -->
           </ul>
 
-          <i-pagination :align="`right`" :showType="`text`" :showEnd="false" :hasSelect="true"
-          :total="101" :size="15" :current="2"></i-pagination>
+          <i-pagination :align="`center`"
+          :showType="`text`" :showEnd="true" :hasSelect="true"
+          :total="total" :size="size" :current="current"
+          @changeCurrent="handleChange"
+          ></i-pagination>
 
           <div class="layui-form layui-form-pane">
             <form>
@@ -220,6 +223,18 @@ export default {
     'i-panel': Panel,
     'i-edit': Edit,
     'i-pagination': Pagination
+  },
+  data () {
+    return {
+      total: 101,
+      size: 15,
+      current: 6
+    }
+  },
+  methods: {
+    handleChange (val) {
+      this.current = val
+    }
   }
 }
 </script>

@@ -1,24 +1,30 @@
 <template>
   <div class="d-flex" :class="{ 'flex-center': align === 'center', 'flex-start': align === 'left', 'flex-end': align === 'right' }">
     <div class="layui-box layui-laypage layui-laypage-default">
-      <a v-show="showEnd" href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">
+      <a @click.prevent="home()" v-show="showEnd" href="javascript:;" :class="{ 'layui-disabled': current === 0 }" class="layui-laypage-prev" >
         <i  v-if="showType === 'icon'" class="layui-icon layui-icon-prev"></i>
         <template v-else>首页</template>
       </a>
-      <a href="javascript:;" data-page="2">
+      <a  @click.prevent="prev()" :class="{ 'layui-disabled': current === 0 }">
         <i v-if="showType === 'icon'" class="layui-icon layui-icon-left"></i>
         <template v-else>上一页</template>
       </a>
-      <a href="javascript:;" :class="[true ? theme : '', true ? 'active' : '']" class="layui-bg-green active">1</a>
-      <a href="javascript:;">2</a>
-      <a href="javascript:;">3</a>
-      <a href="javascript:;">4</a>
-      <a href="javascript:;">5</a>
-      <a href="javascript:;">
+      <!-- current + 2 < pages.length 显示... -->
+      <!-- current - 2 > 1 显示... -->
+      <a href="javascript:;" class="layui-disabled" v-if="pages.length > 5 && current + 1 - 2 > 1">...</a>
+      <template v-for="(item, index) in pages">
+        <a @click="changeIndex(item)"
+          v-if="item >= (current + 1 - 2) && item <= (current + 1 + 2)"
+          :key="`page${index}`"
+          :class="[current === index ? theme : '', current === index ? 'active' : '']"
+        >{{ item }}</a>
+      </template>
+      <a href="javascript:;" class="layui-disabled" v-if="pages.length > 5 && current + 1 + 2 < pages.length" >...</a>
+      <a  @click.prevent="next()" :class="{ 'layui-disabled': current === pages.length - 1 }">
         <i v-if="showType === 'icon'" class="layui-icon layui-icon-right"></i>
         <template v-else>下一页</template>
       </a>
-      <a v-show="showEnd" href="javascript:;" class="layui-laypage-next" data-page="2">
+      <a @click.prevent="end()" v-show="showEnd" :class="{ 'layui-disabled': current === pages.length - 1 }" class="layui-laypage-next" >
         <i v-if="showType === 'icon'" class="layui-icon layui-icon-next"></i>
         <template v-else>尾页</template>
       </a>
@@ -93,23 +99,56 @@ export default {
     }
   },
   methods: {
+    initPages () {
+      const len = Math.ceil(this.total / this.limit)
+      // 5 -> [1,2,3,4,5]
+      this.pages = _.range(1, len + 1)
+    },
     chooseFav (item, index) {
+      if (this.optIndex !== index) {
+        // 当页面上的limit发生变化，调整current数值
+        this.$emit('changeCurrent', Math.floor(this.limit * (this.current + 1) / this.options[index]))
+      }
       this.optIndex = index
+      this.limit = this.options[this.optIndex]
+      this.initPages()
     },
     changeFav () {
       this.isSelect = !this.isSelect
     },
-    initPages () {
-      const len = Math.ceil(this.total / this.size)
-      // 5 -> [1,2,3,4,5]
-      this.pages = _.range(1, len + 1)
+    changeIndex (val) {
+      this.$emit('changeCurrent', val - 1)
+    },
+    home () {
+      this.$emit('changeCurrent', 0)
+    },
+    prev () {
+      let cur = 0
+      if (this.current - 1 < 0) {
+        this.current = 0
+      } else {
+        cur = this.current - 1
+      }
+      this.$emit('changeCurrent', cur)
+    },
+    next () {
+      let cur = 0
+      if (this.current + 1 >= this.pages.length) {
+        cur = this.pages.length - 1
+      } else {
+        cur = this.current + 1
+      }
+      this.$emit('changeCurrent', cur)
+    },
+    end () {
+      this.$emit('changeCurrent', this.pages.length - 1)
     }
   },
   mounted () {
     // 初始化分页的长度
-    this.initPages()
     // 设置select的内容
     this.limit = this.size
+    this.initPages()
     this.options = _.uniq(_.sortBy(_.concat(this.options, this.size)))
     this.optIndex = this.options.indexOf(this.size)
   }
