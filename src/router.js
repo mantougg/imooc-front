@@ -48,6 +48,8 @@ const Reset = () =>
   import(/* webpackChunkName: 'reset' */ './views/Reset.vue')
 const Add = () =>
   import(/* webpackChunkName: 'add' */ './components/contents/Add.vue')
+const Detail = () =>
+  import(/* webpackChunkName: 'detail' */ './components/contents/Detail.vue')
 
 Vue.use(Router)
 
@@ -87,6 +89,11 @@ const router = new Router({
       name: 'add',
       meta: { requiresAuth: true },
       component: Add
+    },
+    {
+      path: '/detail',
+      name: 'detail',
+      component: Detail
     },
     {
       path: '/reg',
