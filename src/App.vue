@@ -104,4 +104,8 @@ export default {
     justify-content: flex-end;
   }
 }
+
+.jieda-body {
+  margin: 25px 0 20px !important;
+}
 </style>

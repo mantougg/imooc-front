@@ -48,12 +48,7 @@
 </template>
 
 <script>
-import moment from 'dayjs'
-import 'dayjs/locale/zh-cn'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import * as _ from 'lodash'
-
-moment.extend(relativeTime)
 
 export default {
   name: 'listitem',
@@ -101,17 +96,6 @@ export default {
   methods: {
     more () {
       this.$emit('next-page')
-    }
-  },
-  filters: {
-    moment (date) {
-      // 超过七天，显示日期
-      if (moment(date).isBefore(moment().subtract(7, 'days'))) {
-        return moment(date).format('YYYY-MM-DD')
-      } else {
-        // 1小时前，XX小时前，X天前
-        return moment(date).locale('zh-cn').from(moment())
-      }
     }
   }
 }

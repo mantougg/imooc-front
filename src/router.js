@@ -91,8 +91,9 @@ const router = new Router({
       component: Add
     },
     {
-      path: '/detail',
+      path: '/detail/:tid',
       name: 'detail',
+      props: true,
       component: Detail
     },
     {

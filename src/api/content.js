@@ -40,11 +40,15 @@ const uploadImg = (formData) => axios.post('/content/upload', formData)
 // 发帖接口
 const addPost = (data) => axios.post('/content/add', { ...data })
 
+// 获取文章详情
+const getDetail = (tid) => axios.get('/public/content/detail?tid=' + tid)
+
 export {
   getList,
   getTips,
   getTop,
   getLinks,
   uploadImg,
-  addPost
+  addPost,
+  getDetail
 }

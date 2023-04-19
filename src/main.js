@@ -2,13 +2,20 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import filters from '@/utils/filter'
 
 import '@/utils/veevalidate'
+import escapeHtml from '@/utils/escapeHtml'
 import Alert from './components/modules/alert'
 import Pop from './components/modules/pop'
 
 Vue.use(Alert)
 Vue.use(Pop)
+Object.keys(filters).forEach((key) => {
+  Vue.filter(key, filters[key])
+})
+
+Vue.prototype.escapeHtml = escapeHtml
 Vue.config.productionTip = false
 
 new Vue({

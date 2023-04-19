@@ -98,6 +98,11 @@ export default {
       limit: 10
     }
   },
+  watch: {
+    total () {
+      this.initPages()
+    }
+  },
   methods: {
     initPages () {
       const len = Math.ceil(this.total / this.limit)
