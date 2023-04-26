@@ -113,6 +113,7 @@ export default {
       if (this.optIndex !== index) {
         // 当页面上的limit发生变化，调整current数值
         this.$emit('changeCurrent', Math.floor(this.limit * (this.current + 1) / this.options[index]))
+        this.$emit('changeLimit', this.options[index])
       }
       this.optIndex = index
       this.limit = this.options[this.optIndex]
@@ -122,7 +123,9 @@ export default {
       this.isSelect = !this.isSelect
     },
     changeIndex (val) {
-      this.$emit('changeCurrent', val - 1)
+      if (val !== this.current) {
+        this.$emit('changeCurrent', val - 1)
+      }
     },
     home () {
       this.$emit('changeCurrent', 0)

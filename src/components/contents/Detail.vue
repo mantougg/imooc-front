@@ -90,9 +90,9 @@
                   <span>{{ item.created | moment }}</span>
                 </div>
 
-                <!-- <i class="iconfont icon-caina" title="最佳答案"></i> -->
+                <i class="iconfont icon-caina" title="最佳答案" v-show="item.isBest === '1'"></i>
               </div>
-              <div class="detail-body jieda-body photos" v-html="escapeHtml(item.content)">
+              <div class="detail-body jieda-body photos" v-richtext="item.content">
               </div>
               <div class="jieda-reply">
                 <span class="jieda-zan" :class="{ 'zanok': item.handed === '1' }" type="zan">
@@ -104,9 +104,9 @@
                   回复
                 </span>
                 <div class="jieda-admin">
-                  <span type="edit">编辑</span>
-                  <span type="del">删除</span>
-                  <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+                  <span v-if="page.isEnd === '0' && item.cuid._id === user._id" type="edit" @click="editComment(item)">编辑</span>
+                  <!-- <span type="del">删除</span> -->
+                  <span class="jieda-accept" @click="setBest(item)">采纳</span>
                 </div>
               </div>
             </li>
@@ -119,11 +119,12 @@
           :showType="`text`" :showEnd="true" :hasSelect="true"
           :total="total" :size="size" :current="current"
           @changeCurrent="handleChange"
+          @changeLimit="handleLimit"
           ></i-pagination>
 
           <div class="layui-form layui-form-pane">
-            <form>
-              <i-edit></i-edit>
+            <validation-observer ref="observer" v-slot="{ validate }">
+              <i-edit :initContent="editInfo.content" @changeContent="addContent"></i-edit>
               <div class="layui-form-item">
                 <validation-provider
                   name="code"
@@ -154,9 +155,9 @@
               </div>
               <div class="layui-form-item">
                 <input type="hidden" name="jid" value="123">
-                <button class="layui-btn" type="button">提交回复</button>
+                <button class="layui-btn" type="button" @click="validate().then(submit)">提交回复</button>
               </div>
-            </form>
+            </validation-observer>
           </div>
         </div>
       </div>
@@ -179,8 +180,9 @@ import Edit from '../modules/editor/index.vue'
 import CodeMixin from '@/mixins/CodeMixin'
 import Pagination from '@/components/modules/page/Pagination.vue'
 import { getDetail } from '@/api/content'
-import { getComments } from '@/api/comments'
+import { getComments, addComment, updateComment } from '@/api/comments'
 import escapeHtml from '@/utils/escapeHtml'
+import { scrollToElem } from '@/utils/common'
 
 export default {
   name: 'detail',
@@ -217,11 +219,19 @@ export default {
         return ''
       }
       return escapeHtml(this.page.content)
+    },
+    user () {
+      return this.$store.state.userInfo
     }
   },
   methods: {
     handleChange (val) {
       this.current = val
+      this.getCommentsList()
+    },
+    handleLimit (val) {
+      this.size = val
+      this.getCommentsList()
     },
     getPostDetail () {
       getDetail(this.tid).then(res => {
@@ -231,12 +241,105 @@ export default {
       })
     },
     getCommentsList () {
-      getComments(this.tid).then(res => {
+      getComments({
+        tid: this.tid,
+        page: this.current,
+        limit: this.size
+      }).then(res => {
         if (res.code === 200) {
           this.comments = res.data
           this.total = res.total
         }
       })
+    },
+    addContent (val) {
+      this.editInfo.content = val
+    },
+    async submit () {
+      const self = this
+      const isValid = await self.$refs.observer.validate()
+      if (!isValid) {
+        // ABORT!!
+        return
+      }
+      // 用户未登录
+      const { isLogin } = self.$store.state
+      if (!isLogin) {
+        self.$pop('shake', '请先登录')
+        return
+      }
+      // 用户禁言状态判断
+      const user = self.$store.state.userInfo
+      if (user.status !== '0') {
+        self.$pop('shake', '用户已经禁言，请联系管理员')
+        return
+      }
+      self.editInfo.sid = self.$store.state.sid
+      self.editInfo.code = self.code
+      self.editInfo.tid = self.tid
+      // 获取评论用户的信息：图片、昵称、vip
+      const cuid = {
+        _id: user._id,
+        pic: user.pic,
+        name: user.name,
+        isVip: user.isVip
+      }
+      if (self.editInfo.cid !== '' && typeof self.editInfo.cid !== 'undefined') {
+        const obj = { ...self.editInfo }
+        delete obj.item
+        // 判断用户是否修改了内容
+        if (self.editInfo.content === self.editInfo.item.content) {
+          self.$pop('shake', '内容没有发生变动~~~')
+          return
+        }
+        // 更新评论
+        updateComment(obj).then(res => {
+          if (res.code === 200) {
+            const temp = self.editInfo.item
+            temp.content = this.editInfo.content
+            self.$pop('', '更新评论成功')
+            self.code = ''
+            self.editInfo.content = ''
+            // 方法一，只用更新特定的一条content created $set
+            // 方法二，更新整个数组中的这一条
+            self.comments.splice(self.comments.indexOf(self.editInfo.item), 1, temp)
+          }
+        })
+        return
+      }
+      addComment(self.editInfo).then((res) => {
+        if (res.code === 200) {
+          self.$pop('', '发表评论成功')
+          // 发表评论成功后，清空回复内容
+          self.code = ''
+          self.editInfo.content = ''
+          // 添加新的评论到评论列表
+          res.data.cuid = cuid
+          self.comments.push(res.data)
+          requestAnimationFrame(() => {
+            self.$refs.observer.reset()
+          })
+          // 刷新图形验证码
+          self._getCode()
+        } else {
+          self.$alert(res.msg)
+        }
+      })
+    },
+    editComment (item) {
+      this.editInfo.content = item.content
+      // 动态滚动到输入框的位置，并进行focus
+      scrollToElem('.layui-input-block', 500, -65)
+      document.getElementById('edit').focus()
+      // 确定需要去编辑的记录
+      this.editInfo.cid = item._id
+      this.editInfo.item = item
+    },
+    setBest (item) {
+      this.$confirm('确定采纳为最佳答案吗？', () => {
+        // 发送采纳最佳答案的请求
+        console.log(item._id)
+      }, () => {})
     }
   },
   mounted () {
