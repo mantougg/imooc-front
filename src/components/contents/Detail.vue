@@ -106,7 +106,7 @@
                 <div class="jieda-admin">
                   <span v-if="page.isEnd === '0' && item.cuid._id === user._id" type="edit" @click="editComment(item)">编辑</span>
                   <!-- <span type="del">删除</span> -->
-                  <span class="jieda-accept" @click="setBest(item)">采纳</span>
+                  <span v-if="page.isEnd === '0'" class="jieda-accept" @click="setBest(item)">采纳</span>
                 </div>
               </div>
             </li>
@@ -180,7 +180,7 @@ import Edit from '../modules/editor/index.vue'
 import CodeMixin from '@/mixins/CodeMixin'
 import Pagination from '@/components/modules/page/Pagination.vue'
 import { getDetail } from '@/api/content'
-import { getComments, addComment, updateComment } from '@/api/comments'
+import { getComments, addComment, updateComment, setCommentBest } from '@/api/comments'
 import escapeHtml from '@/utils/escapeHtml'
 import { scrollToElem } from '@/utils/common'
 
@@ -338,7 +338,16 @@ export default {
     setBest (item) {
       this.$confirm('确定采纳为最佳答案吗？', () => {
         // 发送采纳最佳答案的请求
-        console.log(item._id)
+        setCommentBest({
+          cid: item._id,
+          tid: this.tid
+        }).then(res => {
+          if (res.code === 200) {
+            this.$pop('', '设置最佳答案成功')
+            item.isBest = '1'
+            this.page.isEnd = '1'
+          }
+        })
       }, () => {})
     }
   },
