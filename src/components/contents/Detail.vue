@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="layui-btn-container fly-detail-admin pt10">
-            <a  class="layui-btn layui-btn-sm jie-admin">编辑</a>
+            <router-link :to="{ name: 'edit', params: { tid: tid, page: page } }" class="layui-btn layui-btn-sm jie-admin" v-show="page.isEnd === '0'">编辑</router-link>
             <a  class="layui-btn layui-btn-sm jie-admin jie-admin-collection">收藏</a>
           </div>
           <!-- 帖子内容部分 -->
@@ -95,11 +95,11 @@
               <div class="detail-body jieda-body photos" v-richtext="item.content">
               </div>
               <div class="jieda-reply">
-                <span class="jieda-zan" :class="{ 'zanok': item.handed === '1' }" type="zan">
+                <span @click="hands(item)" class="jieda-zan" :class="{ 'zanok': item.handed === 1 }" type="zan">
                   <i class="iconfont icon-zan"></i>
                   <em>{{ item.hands }}</em>
                 </span>
-                <span type="reply">
+                <span type="reply" @click="reply(item)">
                   <i class="iconfont icon-svgmoban53"></i>
                   回复
                 </span>
@@ -115,7 +115,7 @@
             <li class="fly-none" v-if="comments.length === 0">消灭零回复</li>
           </ul>
 
-          <i-pagination :align="`center`"
+          <i-pagination v-show="comments.length > 0 && total > 0" :align="`center`"
           :showType="`text`" :showEnd="true" :hasSelect="true"
           :total="total" :size="size" :current="current"
           @changeCurrent="handleChange"
@@ -180,7 +180,7 @@ import Edit from '../modules/editor/index.vue'
 import CodeMixin from '@/mixins/CodeMixin'
 import Pagination from '@/components/modules/page/Pagination.vue'
 import { getDetail } from '@/api/content'
-import { getComments, addComment, updateComment, setCommentBest } from '@/api/comments'
+import { getComments, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
 import escapeHtml from '@/utils/escapeHtml'
 import { scrollToElem } from '@/utils/common'
 
@@ -225,6 +225,38 @@ export default {
     }
   },
   methods: {
+    reply (item) {
+      console.log('🚀 ~ file: Detail.vue:229 ~ reply ~ item:', item)
+      // 插入@ + name到content
+      // 滚动页面到输入框
+      // focus 输入框
+      const reg = /^@[\S]+/g
+      if (this.editInfo.content) {
+        if (reg.test(this.editInfo.content)) {
+          this.editInfo.content = this.editInfo.content.replace(reg, '@' + item.cuid.name + ' ')
+        } else {
+          // 评论框非空
+          this.editInfo.content = `@${item.cuid.name} ${this.editInfo.content}`
+        }
+      } else {
+        // 评论框为空
+        this.editInfo.content = '@' + item.cuid.name + ' '
+      }
+      // 动态滚动到输入框的位置，并进行focus
+      scrollToElem('.layui-input-block', 500, -65)
+      document.getElementById('edit').focus()
+    },
+    hands (item) {
+      setHands({ cid: item._id }).then(res => {
+        if (res.code === 200) {
+          this.$pop('', '点赞成功!')
+          item.handed = 1
+          item.hands += 1
+        } else {
+          this.$pop('shake', res.msg)
+        }
+      })
+    },
     handleChange (val) {
       this.current = val
       this.getCommentsList()
@@ -313,6 +345,7 @@ export default {
           // 发表评论成功后，清空回复内容
           self.code = ''
           self.editInfo.content = ''
+          self.page.answer += 1
           // 添加新的评论到评论列表
           res.data.cuid = cuid
           self.comments.push(res.data)

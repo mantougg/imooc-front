@@ -48,6 +48,8 @@ const Reset = () =>
   import(/* webpackChunkName: 'reset' */ './views/Reset.vue')
 const Add = () =>
   import(/* webpackChunkName: 'add' */ './components/contents/Add.vue')
+const Edit = () =>
+  import(/* webpackChunkName: 'edit' */ './components/contents/Edit.vue')
 const Detail = () =>
   import(/* webpackChunkName: 'detail' */ './components/contents/Detail.vue')
 
@@ -89,6 +91,31 @@ const router = new Router({
       name: 'add',
       meta: { requiresAuth: true },
       component: Add
+    },
+    {
+      path: '/edit/:tid',
+      name: 'edit',
+      props: true,
+      meta: { requiresAuth: true },
+      component: Edit,
+      beforeEnter (to, from, next) {
+        if (from.name === 'detail' && to.params.page && to.params.page.isEnd === '0') {
+          next()
+        } else {
+          // 用户在edit页面刷新
+          const editData = localStorage.getItem('editData')
+          if (editData && editData !== '') {
+            const editObj = JSON.parse(editData)
+            if (editObj.isEnd === '0') {
+              next()
+            } else {
+              next('/')
+            }
+          } else {
+            next('/')
+          }
+        }
+      }
     },
     {
       path: '/detail/:tid',

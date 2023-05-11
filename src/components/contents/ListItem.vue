@@ -10,7 +10,7 @@
         </a>
         <h2>
           <a class="layui-badge">{{item.catalog}}</a>
-          <router-link :to="{ path: `/detail/${item._id}` }">{{item.title}}</router-link>
+          <router-link :to="{ name: 'detail', params: { tid: item._id } }">{{item.title}}</router-link>
         </h2>
         <div class="fly-list-info">
           <a link>

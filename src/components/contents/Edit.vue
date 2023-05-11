@@ -6,71 +6,43 @@
         <div class="layui-form layui-form-pane">
           <div class="layui-tab layui-tab-brief" lay-filter="user">
             <ul class="layui-tab-title">
-              <li class="layui-this">发表新帖<!-- 编辑帖子 --></li>
+              <li class="layui-this"> 编辑帖子</li>
             </ul>
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
               <div class="layui-tab-item layui-show">
                 <validation-observer ref="observer" v-slot="{ validate }">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
-                      <validation-provider
-                        name="catalog"
-                        rules="is_not:请选择"
-                        v-slot="{errors}"
-                      >
-                        <div class="layui-row">
-                          <label class="layui-form-label">所在专栏</label>
-                          <div class="layui-input-block" @click="isSelect = !isSelect">
-                            <div class="layui-unselect layui-form-select" :class="{ 'layui-form-selected': isSelect }">
-                              <div class="layui-select-title">
-                                <input type="text" placeholder="请选择" v-model="catalogs[cataIndex].text" class="layui-input layui-unselect"/>
-                                <i class="layui-edge"></i>
-                              </div>
-                              <dl class="layui-anim layui-anim-upbit">
-                                <dd v-for="(item, index) in catalogs" :key="`catlog${index}`" :class="{ 'layui-this': index === cataIndex }" @click="chooseCatalog(item, index)">
-                                  {{ item.text }}
-                                </dd>
-                              </dl>
+                      <div class="layui-row">
+                        <label class="layui-form-label">所在专栏</label>
+                        <div class="layui-input-block">
+                          <div class="layui-unselect layui-form-select">
+                            <div class="layui-select-title">
+                              <input type="text" placeholder="请选择" v-model="catalogs[cataIndex].text" class="layui-input layui-unselect layui-disabled"/>
+                              <i class="layui-edge"></i>
                             </div>
                           </div>
                         </div>
-                        <div class="layui-row">
-                          <span style="color: #c00;">{{errors[0]}}</span>
-                        </div>
-                      </validation-provider>
+                      </div>
                     </div>
                     <div class="layui-col-md9">
-                      <validation-provider
-                        name="title"
-                        rules="required"
-                        v-slot="{errors}"
-                      >
-                        <label for="L_title" class="layui-form-label">标题</label>
-                        <div class="layui-input-block">
-                          <input type="text" v-model="title" id="L_title" name="title" class="layui-input">
-                          <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
-                        </div>
-                        <div class="layui-row">
-                          <span style="color: #c00;">{{errors[0]}}</span>
-                        </div>
-                      </validation-provider>
+                      <label for="L_title" class="layui-form-label">标题</label>
+                      <div class="layui-input-block">
+                        <input type="text" v-model="title" id="L_title" name="title" class="layui-input">
+                        <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
+                      </div>
                     </div>
                   </div>
                   <i-edit :initContent="content" @changeContent="add($event)"></i-edit>
                   <div class="layui-form-item">
                     <div class="layui-row">
                       <label class="layui-form-label">悬赏飞吻</label>
-                      <div class="layui-input-inline" @click="isSelect_fav = !isSelect_fav" style="width: 190px;">
-                        <div class="layui-unselect layui-form-select" :class="{ 'layui-form-selected': isSelect_fav }">
+                      <div class="layui-input-inline" style="width: 190px;">
+                        <div class="layui-unselect layui-form-select">
                           <div class="layui-select-title">
-                            <input type="text" placeholder="请选择" v-model="favList[favIndex]" class="layui-input layui-unselect"/>
+                            <input type="text" placeholder="请选择" v-model="favList[favIndex]" class="layui-input layui-unselect layui-disabled"/>
                             <i class="layui-edge"></i>
                           </div>
-                          <dl class="layui-anim layui-anim-upbit">
-                            <dd v-for="(item, index) in favList" :key="`favList${index}`" :class="{ 'layui-this': index === favIndex }" @click="chooseFav(item, index)">
-                              {{ item }}
-                            </dd>
-                          </dl>
                         </div>
                       </div>
                       <div class="layui-form-mid layui-word-aux">发表后无法更改飞吻</div>
@@ -118,13 +90,14 @@
 </template>
 
 <script>
-import { addPost } from '@/api/content'
+import { updatePost } from '@/api/content'
 import Edit from '../modules/editor/index.vue'
 import CodeMixin from '@/mixins/CodeMixin'
 
 export default {
-  name: 'add',
+  name: 'Edit',
   mixins: [CodeMixin],
+  props: ['tid', 'page'],
   components: {
     'i-edit': Edit
   },
@@ -135,8 +108,6 @@ export default {
   },
   data () {
     return {
-      isSelect: false,
-      isSelect_fav: false,
       cataIndex: 0,
       favIndex: 0,
       catalogs: [{
@@ -178,21 +149,20 @@ export default {
         return
       }
       // 添加新的文章
-      addPost({
+      updatePost({
+        tid: this.tid,
         title: this.title,
-        catalog: this.catalogs[this.cataIndex].value,
         content: this.content,
-        fav: this.favList[this.favIndex],
         code: this.code,
         sid: this.$store.state.sid
       }).then(res => {
         if (res.code === 200) {
           // 清空已发布的内容
-          localStorage.setItem('addData', '')
-          this.$pop('', '发帖成功')
+          localStorage.setItem('editData', '')
+          this.$pop('', '更新成功')
           setTimeout(() => {
-            this.$router.push({ name: 'detail', params: { tid: res.data._id } })
-          }, 2000)
+            this.$router.push({ name: 'detail', params: { tid: this.tid } })
+          }, 1000)
         } else {
           this.$alert(res.msg)
         }
@@ -207,23 +177,38 @@ export default {
         favIndex: this.favIndex
       }
       if (this.title.trim() !== '' && this.content.trim() !== '') {
-        localStorage.setItem('addData', JSON.stringify(saveData))
+        const editData = localStorage.getItem('editData')
+        let newObj = {}
+        if (editData && editData !== '') {
+          newObj = { ...saveData, ...JSON.parse(editData) }
+        }
+        localStorage.setItem('editData', JSON.stringify(newObj))
       }
     }
   },
   mounted () {
     const self = this
-    const saveData = localStorage.getItem('addData')
-    if (saveData && saveData !== '') {
-      this.$confirm('是否加在未编辑完的内容？', () => {
-        const obj = JSON.parse(saveData)
-        self.content = obj.content
-        self.title = obj.title
-        self.cataIndex = obj.cataIndex
-        self.favIndex = obj.favIndex
-      }, () => {
-        localStorage.setItem('addData', '')
-      })
+    if (self.page) {
+      self.content = self.page.content
+      self.title = self.page.title
+      self.fav = this.favList.indexOf(parseInt(self.page.fav))
+      self.cataIndex = self.catalogs.indexOf(self.catalogs.filter((item) => item.value === this.page.catalog)[0])
+      // 缓存edit内容
+      localStorage.setItem('editData', JSON.stringify(self.page))
+    } else {
+      // 页面上无page内容，可能是用户进行了刷新，则取本地缓存的内容
+      const saveData = localStorage.getItem('editData')
+      if (saveData && saveData !== '') {
+        this.$confirm('是否加在未编辑完的内容？', () => {
+          const obj = JSON.parse(saveData)
+          self.content = obj.content
+          self.title = obj.title
+          self.cataIndex = obj.cataIndex
+          self.favIndex = obj.favIndex
+        }, () => {
+          localStorage.setItem('editData', '')
+        })
+      }
     }
   }
 }

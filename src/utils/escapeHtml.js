@@ -62,6 +62,8 @@ const escapeHtml = (val = '') => {
   }
   // 替换hr
   result = result.replace(/\s\[hr\]/g, '<hr>')
+  // 替换\n
+  // result = result.replace(/\s\\\n]/g, '<br>')
   return result
 }
 
