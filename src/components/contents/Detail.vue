@@ -224,6 +224,12 @@ export default {
       return this.$store.state.userInfo
     }
   },
+  watch: {
+    tid () {
+      this.getPostDetail()
+      this.getCommentsList()
+    }
+  },
   methods: {
     reply (item) {
       console.log('🚀 ~ file: Detail.vue:229 ~ reply ~ item:', item)
