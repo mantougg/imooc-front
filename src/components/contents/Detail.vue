@@ -53,7 +53,7 @@
           </div>
           <div class="layui-btn-container fly-detail-admin pt10">
             <router-link :to="{ name: 'edit', params: { tid: tid, page: page } }" class="layui-btn layui-btn-sm jie-admin" v-show="page.isEnd === '0'">编辑</router-link>
-            <a  class="layui-btn layui-btn-sm jie-admin jie-admin-collection">收藏</a>
+            <a @click.prevent="setCollect()" :class="{ 'layui-btn-primary': page.isFav }" class="layui-btn layui-btn-sm jie-admin jie-admin-collection">{{ page.isFav ? '取消收藏' : '收藏' }}</a>
           </div>
           <!-- 帖子内容部分 -->
           <div class="detail-body photos" v-html="content"></div>
@@ -183,6 +183,7 @@ import { getDetail } from '@/api/content'
 import { getComments, addComment, updateComment, setCommentBest, setHands } from '@/api/comments'
 import escapeHtml from '@/utils/escapeHtml'
 import { scrollToElem } from '@/utils/common'
+import { addCollect } from '@/api/user'
 
 export default {
   name: 'detail',
@@ -231,6 +232,25 @@ export default {
     }
   },
   methods: {
+    setCollect () {
+      // 设置收藏 & 取消收藏
+      const isLogin = this.$store.state.isLogin
+      if (isLogin) {
+        const collect = {
+          tid: this.tid,
+          title: this.page.title,
+          isFav: this.page.isFav ? 1 : 0
+        }
+        addCollect(collect).then(res => {
+          if (res.code === 200) {
+            this.page.isFav = !this.page.isFav
+            this.$pop('', this.page.isFav ? '设置收藏成功' : '取消收藏成功')
+          }
+        })
+      } else {
+        this.$pop('shake', '请先登录后再进行收藏')
+      }
+    },
     reply (item) {
       console.log('🚀 ~ file: Detail.vue:229 ~ reply ~ item:', item)
       // 插入@ + name到content
