@@ -29,7 +29,7 @@
         <template v-else>尾页</template>
       </a>
     </div>
-    <div v-if="hasTotal" class="total">到第<input class="i-input" type="text" >页 共 total 页</div>
+    <div v-if="hasTotal" class="total">到第<input class="i-input" type="text" >页 共 {{ pages.length }} 页</div>
     <div v-if="hasSelect">
       <div @click="changeFav()" class="layui-unselect layui-form-select" :class="{ 'layui-form-selected': isSelect }">
         <div class="layui-select-title">
@@ -62,7 +62,7 @@ export default {
     },
     showEnd: {
       type: Boolean,
-      default: true
+      default: false
     },
     theme: {
       type: String,
@@ -194,6 +194,7 @@ export default {
   padding: 0 5px;
   height: 28px;
   line-height: 28px;
+  border: 1px solid #e6e6e6;
 }
 
 .layui-input {

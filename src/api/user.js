@@ -27,6 +27,14 @@ const addCollect = (params) => axios.get('/user/set-collect?' + qs.stringify(par
 // 获取收藏列表
 const getCollect = (params) => axios.get('/user/collect?' + qs.stringify(params))
 
+// 获取个人发帖列表
+const getPostListByUid = (params) => axios.get('/user/post?' + qs.stringify(params))
+
+// 删除指定文章
+const deletePostByUid = (data) => axios.post('/user/del-post', {
+  ...data
+})
+
 export {
   userSign,
   updateUserInfo,
@@ -34,5 +42,7 @@ export {
   updatePassword,
   changePasswd,
   addCollect,
-  getCollect
+  getCollect,
+  getPostListByUid,
+  deletePostByUid
 }

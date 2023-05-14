@@ -99,7 +99,7 @@ const router = new Router({
       meta: { requiresAuth: true },
       component: Edit,
       beforeEnter (to, from, next) {
-        if (from.name === 'detail' && to.params.page && to.params.page.isEnd === '0') {
+        if (['detail', 'mypost'].indexOf(from.name) > -1 && to.params.page && to.params.page.isEnd === '0') {
           next()
         } else {
           // 用户在edit页面刷新
