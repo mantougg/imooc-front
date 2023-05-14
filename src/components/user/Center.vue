@@ -1,13 +1,13 @@
 <template>
   <div class="panel main pd20">
-    <div class="msg">Hi, Admin, 你已经是我们的正式会员！</div>
+    <div class="msg">Hi, {{ userInfo.name }}, 你已经是我们的正式会员！</div>
     <div class="layui-row layui-col-space20">
       <div class="layui-col-md6">
         <div class="panel border">
           <div class="title">我的会员信息</div>
-          <div class="content">
-            <p>积分经验值：60</p>
-            <p>您当前为：非VIP</p>
+          <div class="content fly-signin">
+            <p>积分经验值：<cite>{{ userInfo.favs }}</cite></p>
+            <p>您当前为：<cite>{{ userInfo.isVip !== 0 ? '非VIP' : `VIP${userInfo.isVip}` }}</cite></p>
           </div>
         </div>
       </div>
@@ -101,11 +101,29 @@
 
 <script>
 import Sign from '@/components/sidebar/Sign.vue'
+import { getInfo } from '@/api/user'
 
 export default {
   name: 'user-center',
   components: {
     'i-sign': Sign
+  },
+  computed: {
+    userInfo () {
+      return this.$store.state.userInfo
+    }
+  },
+  methods: {
+    getUserInfo () {
+      getInfo().then(res => {
+        if (res.code === 200) {
+          this.$store.commit('setUserInfo', res.data)
+        }
+      })
+    }
+  },
+  mounted () {
+    this.getUserInfo()
   }
 }
 </script>
