@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     getUserInfo () {
-      getInfo().then(res => {
+      getInfo({ uid: this.userInfo._id }).then(res => {
         if (res.code === 200) {
           this.$store.commit('setUserInfo', res.data)
         }

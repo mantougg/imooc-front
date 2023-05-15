@@ -45,7 +45,20 @@ export default {
       timer: ''
     }
   },
+  watch: {
+    userInfo (n, o) {
+      if (n.isSign === true) {
+        this.timeDown()
+        this.isSign = true
+      } else {
+        this.isSign = false
+      }
+    }
+  },
   computed: {
+    userInfo () {
+      return this.$store.state.userInfo
+    },
     isLogin () {
       return !!this.$store.state.isLogin
     },

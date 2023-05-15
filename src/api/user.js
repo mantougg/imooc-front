@@ -36,7 +36,7 @@ const deletePostByUid = (data) => axios.post('/user/del-post', {
 })
 
 // 获取用户基本信息
-const getInfo = (data) => axios.get('/user/info')
+const getInfo = (params) => axios.get('/public/info?' + qs.stringify(params))
 
 export {
   userSign,
